@@ -43,44 +43,44 @@ foreach (string hero in all_heroes)
         Console.WriteLine($"Adding: {hero_name_1} <-> {hero_name_2}");
         Console.Write($"{count}/{all_heroes_count}");
 
-        bool hero_1_added = g.V().Has("hero", "id", hero_name_1).HasNext();
-        bool hero_2_added = g.V().Has("hero", "id", hero_name_2).HasNext();
+        bool hero_1_added = g.V().Has("hero", "name", hero_name_1).HasNext();
+        bool hero_2_added = g.V().Has("hero", "name", hero_name_2).HasNext();
 
         if (!hero_1_added && !hero_2_added)
         {
             // Add vertex
-            await g.AddV("hero").Property("id", hero_name_1).Property("name", hero_name_1).Promise(i => i.Iterate());
-            await g.AddV("hero").Property("id", hero_name_2).Property("name", hero_name_2).Promise(i => i.Iterate());
+            await g.AddV("hero").Property("name", hero_name_1).Promise(i => i.Iterate());
+            await g.AddV("hero").Property("name", hero_name_2).Promise(i => i.Iterate());
 
             // Add edge
-            await g.V().Has("id", hero_name_1).AddE("knows").To(__.V().Has("id", hero_name_2)).Promise(i => i.Iterate());
+            await g.V().Has("name", hero_name_1).AddE("knows").To(__.V().Has("name", hero_name_2)).Promise(i => i.Iterate());
         }
         else if (hero_1_added && !hero_2_added)
         {
-            await g.AddV("hero").Property("id", hero_name_2).Property("name", hero_name_2).Promise(i => i.Iterate());
-            await g.V().Has("id", hero_name_1).AddE("knows").To(__.V().Has("id", hero_name_2)).Promise(i => i.Iterate());
+            await g.AddV("hero").Property("name", hero_name_2).Promise(i => i.Iterate());
+            await g.V().Has("name", hero_name_1).AddE("knows").To(__.V().Has("name", hero_name_2)).Promise(i => i.Iterate());
         }
         else if (!hero_1_added && hero_2_added)
         {
-            await g.AddV("hero").Property("id", hero_name_1).Property("name", hero_name_1).Promise(i => i.Iterate());
-            await g.V().Has("id", hero_name_2).AddE("knows").To(__.V().Has("id", hero_name_1)).Promise(i => i.Iterate());
+            await g.AddV("hero").Property("name", hero_name_1).Promise(i => i.Iterate());
+            await g.V().Has("name", hero_name_2).AddE("knows").To(__.V().Has("name", hero_name_1)).Promise(i => i.Iterate());
         }
         else if (hero_1_added && hero_2_added)
         {
 
-            var hero_1_id = g.V().Has("hero", "id", hero_name_1).Next(); //.ValueMap<object, object>("id").Next();
-            var hero_2_id = g.V().Has("hero", "id", hero_name_2).Next();
-            var hero_edge_out = g.V().Has("id", hero_name_1).OutE("knows").ToList().Where(e => checked((long)e.InV.Id) == checked((long)hero_2_id.Id));
-            var hero_edge_in = g.V().Has("id", hero_name_1).InE("knows").ToList().Where(e => checked((long)e.OutV.Id) == checked((long)hero_2_id.Id));
+            var hero_1_id = g.V().Has("hero", "name", hero_name_1).Next(); //.ValueMap<object, object>("id").Next();
+            var hero_2_id = g.V().Has("hero", "name", hero_name_2).Next();
+            var hero_edge_out = g.V().Has("name", hero_name_1).OutE("knows").ToList().Where(e => checked((long)e.InV.Id) == checked((long)hero_2_id.Id));
+            var hero_edge_in = g.V().Has("name", hero_name_1).InE("knows").ToList().Where(e => checked((long)e.OutV.Id) == checked((long)hero_2_id.Id));
 
             if (hero_edge_out.Count() == 0 && hero_edge_in.Count() == 0)
             {
-                await g.V().Has("id", hero_name_1).AddE("knows").To(__.V().Has("id", hero_name_2)).Promise(i => i.Iterate());
+                await g.V().Has("name", hero_name_1).AddE("knows").To(__.V().Has("name", hero_name_2)).Promise(i => i.Iterate());
             }
 
             if (hero_edge_out.Count() == 0 && hero_edge_in.Count() > 0)
             {
-                await g.V().Has("id", hero_name_1).AddE("knows").To(__.V().Has("id", hero_name_2)).Promise(i => i.Iterate());
+                await g.V().Has("name", hero_name_1).AddE("knows").To(__.V().Has("name", hero_name_2)).Promise(i => i.Iterate());
             }
         }
 
