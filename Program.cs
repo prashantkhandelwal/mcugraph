@@ -2,6 +2,7 @@
 using Gremlin.Net.Driver.Remote;
 using Gremlin.Net.Process.Remote;
 using Gremlin.Net.Process.Traversal;
+using Gremlin.Net.Structure;
 
 string mcu_hero_network_file = "hero-network.csv";
 
@@ -16,11 +17,15 @@ GraphTraversalSource g = AnonymousTraversalSource.Traversal().WithRemote(remoteC
 //var hero_1_id = g.V().Has("hero", "id", "PRINCESS ZANDA").Next();//.ValueMap<object, object>("id").Next();
 //var hero_1_id = g.V().Has("hero", "id", "BLACK PANTHER/T'CHA").OutE("knows").ToList();
 //var all_ids_edges = g.V().Has("id", "BLACK PANTHER/T'CHAL").InE("knows").ToList();
-//var a = g.V().Has("id", "BLACK PANTHER/T'CHAL").OutE("knows").InV().Has("id", "PRINCESS ZANDA").Next();
+//var a = g.V().Has("id", "BLACK PANTHER/T'CHAL").OutE("knows").InV().Has("id", "PRINCESS ZANDA").Next(); 
 //var o = g.V().Has("id", "BLACK PANTHER/T'CHAL").OutE("knows").ToList();
 //var t = hero_edge_1.Where(x => checked((long)x.InV.Id) == checked((long)hero_2_id.Id));
 //int out_edge_count = g.V().Has("id", hero_name_1).OutE("knows").ToList().Count();
 //int in_edge_count = g.V().Has("id", hero_name_1).OutE("knows").ToList().Count();
+// Case-insensitive search of the name.
+//var output = g.V().Has("name", TextP.Regex("(?i)(little)")).Values<string>("name").Next();
+// Get the shortest path(s) from one hero to another. Limiting the result to 10.
+//var output = g.V().Has("name", "LITTLE, ABNER").Until(__.Has("name", "INFINITY II")).Repeat(__.Out().SimplePath()).Limit<int>(10).Path().By("name").ToList();
 #endregion
 
 string[] all_heroes = File.ReadAllLines(mcu_hero_network_file);
@@ -28,6 +33,8 @@ bool header = true;
 
 int all_heroes_count = all_heroes.Count();
 int count = 1;
+
+
 
 foreach (string hero in all_heroes)
 {
